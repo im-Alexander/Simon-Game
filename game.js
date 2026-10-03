@@ -3,6 +3,12 @@ var buttonColors = ["red", "blue", "green", "yellow"];  // an array of all the b
 var gamePattern = [];                                   // stores the game pattern
 var userClickedPattern = [];                            // stores the user click pattern
 var level = 0;                                          // keeps track of players level
+var highScore = 0;
+
+/** Starts game */
+function startGame(){
+    
+}
 
 /** generates the sequence of buttons to be clicked */
 function nextSequence() {
@@ -16,9 +22,18 @@ function nextSequence() {
 }
 
 /** Detects a key down event */
-$("body").keydown(function () {
+$("body").keydown( function () {
     // if statement to make sure a game is not in progress
     if (gamePattern.length === 0) {
+        $(".startButton").addClass("invisible");
+        nextSequence();     // calls the next sequence function to start the game
+        level = 1;
+    }
+});
+
+$(".startButton").click( function () {
+    if (gamePattern.length === 0) {
+        $(".startButton").addClass("invisible");
         nextSequence();     // calls the next sequence function to start the game
         level = 1;
     }
@@ -53,9 +68,13 @@ function checkAnswer(currentLevel) {
 }
 
 function startOver() {
+    if(highScore < gamePattern.length - 1)
+        highScore = gamePattern.length - 1;
+
     gameOverEffect();
     gamePattern = [];
     userClickedPattern = [];
+
     level = 0;
 }
 
@@ -88,7 +107,10 @@ function playSound(color) {
 function gameOverEffect() {
     var gameOverSound = new Audio("./sounds/wrong.mp3");   // creates the sound variable
     gameOverSound.play();                                  // plays sound
-    $("#level-title").html("Game Over, Press Any Key to Restart");
+    $("#level-title").html("Game Over, Press Any Key or");
+    $(".startButton").html("Click here to play again!");
+    $(".startButton").removeClass("invisible");
+    $(".highScoreText").html("High Score : " + highScore);
 
     // flashes screen red for 200ms 
     $("body").addClass("game-over").delay(200).queue(function () {
